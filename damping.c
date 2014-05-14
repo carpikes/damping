@@ -109,8 +109,8 @@ void event()
                         u = u1;
                         break;
                     case SDLK_r:
-                        load_config(CONFIG_FILE);
                         x[0]=x[1]=0;
+                        load_config(CONFIG_FILE);
                         break;
                     default:
                         break;
