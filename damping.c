@@ -121,11 +121,6 @@ void event()
 	}
 }
 
-void lower(char *str) {
-    while ((*str = tolower(*str)))
-        str++;
-}
-
 void ltrim(char *str) {
     char *s1 = str;
     while(*s1 && isspace(*s1))
@@ -146,69 +141,107 @@ void rtrim(char *str) {
         *(str--)=0;
 }
 
+inline void trim(char *str) {
+    ltrim(str);
+    rtrim(str);
+}
+
+void process_pair(char *key, char *value) {
+    trim(key);
+    trim(value);
+
+    if(strlen(key) == 0 || strlen(value) == 0)
+        return;
+
+    if(!strcmp(key, "a"))
+        sscanf(value, "%lf %lf %lf %lf", a, a+1, a+2, a+3);
+    else if(!strcmp(key, "b"))
+        sscanf(value, "%lf %lf", b, b+1);
+    else if(!strcmp(key, "c"))
+        sscanf(value, "%lf %lf", c, c+1);
+    else if(!strcmp(key, "d"))
+        sscanf(value, "%lf", &d);
+    else if(!strcmp(key, "u"))
+        sscanf(value, "%lf", &u0);
+    else if(!strcmp(key, "i"))
+        sscanf(value, "%lf", &u1);
+    else if(!strcmp(key, "x0"))
+        sscanf(value, "%lf %lf", x, x+1);
+    else
+        printf("Invalid config line %s\n", key); 
+}
+
 void load_config(const char *name) {
+
+    #define LINELEN 64
+    #define KEY 0
+    #define VALUE 1
+    #define COMMENT 2
+ 
     FILE *fp;
-    char line[64+1], key[64+1], value[64+1];
-    char *pch;
+    char line[2][LINELEN+1], ch;
+
+    int pos = 0;
+    int line_num = 1;
+    int mode = 0;
 
     fp = fopen(name, "r");
     if(!fp) {
-        printf("Cannot load config.\n");
-        return;
+        fprintf(stderr, "Cannot open config file.\n");
+        exit(-1);
     }
 
-    fgets(line, 64, fp);
+    ch = fgetc(fp);
+
     while(!feof(fp)) {
-        while(strlen(line)>0 && (line[strlen(line)-1]=='\r' || line[strlen(line)-1]=='\n'))
-            line[strlen(line)-1] = 0;
-        
-        
-        pch = strchr(line,'#');
-        if(pch != NULL)
-            *pch = 0;
+        if(ch == '#')
+            mode = COMMENT;
+        else if(ch == '\n' || ch == '\r') {
+            process_pair(line[0],line[1]);
+            mode = KEY;
+            pos = 0;
+            line_num++;
+        } else {
+            if(mode != COMMENT) {
+                if(ch == '=') {
+                    if(mode == KEY) {
+                        mode = VALUE;
+                        pos = 0;
+                    } else {
+                        fprintf(stderr, "Invalid char at line %d.\n", line_num);
+                        fclose(fp);
+                        exit(-1);
+                    }
 
-        pch = strchr(line,'=');
-        if(pch != NULL) {
-            *pch = 0;
-
-            memset(key, 0, sizeof(key));
-            memset(value,0, sizeof(value));
-
-            strcpy(key, line);
-            strcpy(value, pch+1);
-            
-            ltrim(key);
-            rtrim(key);
-            ltrim(value);
-            rtrim(value);
-
-            lower(key);
-          
-            if(!strcmp(key, "a"))
-                sscanf(value, "%lf %lf %lf %lf", a, a+1, a+2, a+3);
-            else if(!strcmp(key, "b"))
-                sscanf(value, "%lf %lf", b, b+1);
-            else if(!strcmp(key, "c"))
-                sscanf(value, "%lf %lf", c, c+1);
-            else if(!strcmp(key, "d"))
-                sscanf(value, "%lf", &d);
-            else if(!strcmp(key, "u"))
-                sscanf(value, "%lf", &u0);
-            else if(!strcmp(key, "i"))
-                sscanf(value, "%lf", &u1);
-            else if(!strcmp(key, "x0"))
-                sscanf(value, "%lf %lf", x, x+1);
-            else
-                printf("Invalid config line %s\n", key); 
+                } else if(isgraph(ch) || isspace(ch)) {
+                    if(pos<LINELEN) {
+                        line[mode][pos++] = tolower(ch);
+                        line[mode][pos] = 0;
+                    } else {
+                        fprintf(stderr, "Line %d too long.\n", line_num);
+                        fclose(fp);
+                        exit(-1);
+                    }
+                } else {
+                    fprintf(stderr, "Invalid char at line %d.\n", line_num);
+                    fclose(fp);
+                    exit(-1);
+                }
+            }
         }
-        fgets(line, 64, fp);
+        ch = fgetc(fp);
     }
-    
+
+    process_pair(line[0],line[1]);
     fclose(fp);
+
+    #undef LINELEN
+    #undef KEY
+    #undef VALUE
+    #undef COMMENT
 }
 
-int main(int argc, char *argv[])
-{
+int main(int argc, char *argv[]) {
 	int x=0;
 	srand(time(NULL));
 	
