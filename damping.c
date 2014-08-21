@@ -29,96 +29,96 @@ void render(double dt, int xpos)
 {
     int xp1;
     /* temp matrices */
-	double dx[2], dx2[2];  /* 1x2 */
-	double ax[2]; /* 1x2 */
-	double bu[2]; /* 1x2 */
-	double cx;
-	double y;
+    double dx[2], dx2[2];  /* 1x2 */
+    double ax[2]; /* 1x2 */
+    double bu[2]; /* 1x2 */
+    double cx;
+    double y;
 
     /* x'(t) = A*x(t) + B*u(t) */
-	mat_mult(bu, b, 2, &u, 1, 1); /* bu = B * u */
-	mat_mult(ax, a, 2, x, 1, 2); /* ax = A * x */
-	mat_sum(dx, ax, bu, 1, 2); /* x'(t) = bu + ax */
+    mat_mult(bu, b, 2, &u, 1, 1); /* bu = B * u */
+    mat_mult(ax, a, 2, x, 1, 2); /* ax = A * x */
+    mat_sum(dx, ax, bu, 1, 2); /* x'(t) = bu + ax */
 
     /* Let's integrate them */
-	mat_mult(dx2, dx, 2, &dt, 1, 1);  /* dx2 = dx * dt */
-	mat_sum(x, x, dx2, 1, 2); /* x += dx2 */
+    mat_mult(dx2, dx, 2, &dt, 1, 1);  /* dx2 = dx * dt */
+    mat_sum(x, x, dx2, 1, 2); /* x += dx2 */
 
     /* y(t) = C*x(t) + d*u(t) */
-	mat_mult(&cx, c, 1, x, 1, 2); /* cx = C * x */
-	y = cx + d*u;
+    mat_mult(&cx, c, 1, x, 1, 2); /* cx = C * x */
+    y = cx + d*u;
 
     /* Debug prints */
-	mat_print("ax", ax, 2);
-	mat_print("bu", bu, 2);
-	mat_print("dx", dx, 2);
-	mat_print("cx", &cx, 1);
-	printf("---\n");
+    mat_print("ax", ax, 2);
+    mat_print("bu", bu, 2);
+    mat_print("dx", dx, 2);
+    mat_print("cx", &cx, 1);
+    printf("---\n");
 
     /* Draw line between last and actual point */
-	xp1 = xpos-1;
+    xp1 = xpos-1;
 
     /* HACK: don't draw line when cursor moves from the end of the screen
      * to the beginning 
      * */
-	if(xp1<0) 
-		xp1=xpos;
+    if(xp1<0) 
+        xp1=xpos;
 
     /* And do the same with y */
-	if(oldy==0.0/0.0)
-		oldy=y;
+    if(oldy==0.0/0.0)
+        oldy=y;
 
     
-	y = screen_height/3*2 - y*screen_height/4;
+    y = screen_height/3*2 - y*screen_height/4;
 
-	lineRGBA(screen, xp1, oldy, xpos, y, 0xff, 0xff, 0xff, 0xff);
+    lineRGBA(screen, xp1, oldy, xpos, y, 0xff, 0xff, 0xff, 0xff);
 
-	oldy=y;
+    oldy=y;
 }
 
 void event()
 {
-	SDL_Event event;
-	while(SDL_PollEvent(&event))
-	{
-		switch(event.type)
-		{
-			case SDL_QUIT:
-				stop = 1;
-				break;
-			case SDL_KEYUP:
-				switch(event.key.keysym.sym) {
-					case SDLK_u:
-					case SDLK_i:
-						u=0;
-						break;
-					default:
-						break;
-				}
-				break;
-			case SDL_KEYDOWN:
-				switch(event.key.keysym.sym)
-				{
-					case SDLK_ESCAPE:
-						stop = 1;
-						break;
-					case SDLK_u:
-						u = u0;
-						break;
-					case SDLK_i:
-						u = u1;
-						break;
-					case SDLK_r:
+    SDL_Event event;
+    while(SDL_PollEvent(&event))
+    {
+        switch(event.type)
+        {
+            case SDL_QUIT:
+                stop = 1;
+                break;
+            case SDL_KEYUP:
+                switch(event.key.keysym.sym) {
+                    case SDLK_u:
+                    case SDLK_i:
+                        u=0;
+                        break;
+                    default:
+                        break;
+                }
+                break;
+            case SDL_KEYDOWN:
+                switch(event.key.keysym.sym)
+                {
+                    case SDLK_ESCAPE:
+                        stop = 1;
+                        break;
+                    case SDLK_u:
+                        u = u0;
+                        break;
+                    case SDLK_i:
+                        u = u1;
+                        break;
+                    case SDLK_r:
+                        x[0]=x[1]=0;
                         load_config(CONFIG_FILE);
-						x[0]=x[1]=0;
-						break;
-					default:
-						break;
-				}
-			default:
-				break;
-		}
-	}
+                        break;
+                    default:
+                        break;
+                }
+            default:
+                break;
+        }
+    }
 }
 
 void ltrim(char *str) {
@@ -248,26 +248,26 @@ int main(int argc, char *argv[]) {
 	SDL_Init(SDL_INIT_EVERYTHING);
 	screen = SDL_SetVideoMode(screen_width, screen_height, 32, SDL_HWSURFACE);
 
-	load_config(CONFIG_FILE);
+    load_config(CONFIG_FILE);
 
-	while(!stop)
-	{
-		event();
+    while(!stop)
+    {
+        event();
 
-		SDL_LockSurface(screen);
+        SDL_LockSurface(screen);
 
-		lineRGBA(screen, x, 0, x, screen_height, 0,0,0, 0xff);
-		
-		render(10/1000.0f, x);
+        lineRGBA(screen, x, 0, x, screen_height, 0,0,0, 0xff);
+        
+        render(10/1000.0f, x);
 
-		SDL_UnlockSurface(screen);
-		SDL_Flip(screen);
+        SDL_UnlockSurface(screen);
+        SDL_Flip(screen);
 
-		SDL_Delay(10);
+        SDL_Delay(10);
 
-		x = (x+1)%screen_width;
-	}
+        x = (x+1)%screen_width;
+    }
 
-	SDL_Quit();
-	return 0;
+    SDL_Quit();
+    return 0;
 }
