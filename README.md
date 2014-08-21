@@ -8,11 +8,17 @@ It allows you to watch what happens to a feedback system when you play with its 
 
 It works with second-order systems described by this equation:
 
-![](http://www.sciweavers.org/tex2img.php?eq=%5Cbegin%7Bcases%7D%20%5Cdot%7Bx%7D%20%3D%20A%20%5Ccdot%20x%20%2B%20B%20%5Ccdot%20u%20%5C%5C%20y%20%3D%20C%20%5Ccdot%20x%20%2B%20d%20%5Ccdot%20u%20%5Cend%7Bcases%7D&bc=White&fc=Black&im=png&fs=12&ff=fourier&edit=0)
+![](http://i.imgur.com/jNywEt0.png)
 
 where 
 
-![](http://www.sciweavers.org/tex2img.php?eq=A%20%3D%20%20%5Cbegin%7Bbmatrix%7Da_1%20%26%20a_2%20%5C%5C%20a_3%20%26%20a_4%20%5Cend%7Bbmatrix%7D%2C%20B%20%3D%20%20%5Cbegin%7Bbmatrix%7Db_1%20%5C%5C%20b_2%20%5Cend%7Bbmatrix%7D%2C%20C%20%3D%20%20%5Cbegin%7Bbmatrix%7Dc_1%20%26%20c_2%20%5Cend%7Bbmatrix%7D&bc=White&fc=Black&im=png&fs=12&ff=fourier&edit=0)
+![](http://i.imgur.com/Rhdu74C.png)
+
+
+Screenshot
+-------
+
+![Screenshot](http://i.imgur.com/BqvLK5I.png)
 
 
 Configuration
