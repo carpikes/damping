@@ -40,6 +40,7 @@ void mat_print(const char *name, double mat[], size_t size) {
     size_t i;
     printf("%s [", name);
     for(i=0;i<size;i++)
-        printf("%2.5f ", mat[i]);
+        printf("%+3.6f ", mat[i]);
     printf("]\n");
+    fflush(stdout);
 }
