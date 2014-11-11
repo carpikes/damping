@@ -181,8 +181,8 @@ void load_config(const char *name) {
     FILE *fp;
     char line[2][LINELEN+1], ch;
 
-    int pos = 0;
-    int line_num = 1;
+    size_t pos = 0;
+    size_t line_num = 1;
     int mode = 0;
 
     fp = fopen(name, "r");
@@ -208,7 +208,7 @@ void load_config(const char *name) {
                         mode = VALUE;
                         pos = 0;
                     } else {
-                        fprintf(stderr, "Invalid char at line %d.\n", line_num);
+                        fprintf(stderr, "Invalid char at line %lu.\n", line_num);
                         fclose(fp);
                         exit(-1);
                     }
@@ -218,12 +218,12 @@ void load_config(const char *name) {
                         line[mode][pos++] = tolower(ch);
                         line[mode][pos] = 0;
                     } else {
-                        fprintf(stderr, "Line %d too long.\n", line_num);
+                        fprintf(stderr, "Line %lu too long.\n", line_num);
                         fclose(fp);
                         exit(-1);
                     }
                 } else {
-                    fprintf(stderr, "Invalid char at line %d.\n", line_num);
+                    fprintf(stderr, "Invalid char at line %lu.\n", line_num);
                     fclose(fp);
                     exit(-1);
                 }
@@ -242,7 +242,7 @@ void load_config(const char *name) {
 }
 
 int main(int argc, char *argv[]) {
-	int x=0;
+	unsigned int x=0;
 	srand(time(NULL));
 	
 	SDL_Init(SDL_INIT_EVERYTHING);

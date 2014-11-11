@@ -8,8 +8,8 @@
  * @param rw Number of right matrix columns
  * @param s Number of left matrix columns (or right matrix rows)
  */
-void mat_mult(double out[], double m_l[], int lh, double m_r[], int rw, int s) {
-    int i,x,y;
+void mat_mult(double out[], double m_l[], size_t lh, double m_r[], size_t rw, size_t s) {
+    size_t i,x,y;
 
     for(y=0;y<lh;y++)
         for(x=0;x<rw;x++) {
@@ -27,8 +27,8 @@ void mat_mult(double out[], double m_l[], int lh, double m_r[], int rw, int s) {
  * @param w width
  * @param h height
  */
-void mat_sum(double out[], double m_l[], double m_r[], int w, int h) {
-    int i, wh=w*h;
+void mat_sum(double out[], double m_l[], double m_r[], size_t w, size_t h) {
+    size_t i, wh=w*h;
 
     for(i=0;i<wh;i++)
         out[i]=m_l[i]+m_r[i];
@@ -36,8 +36,8 @@ void mat_sum(double out[], double m_l[], double m_r[], int w, int h) {
 
  /** Prints a matrix
   */
-void mat_print(const char *name, double mat[], int size) {
-    int i;
+void mat_print(const char *name, double mat[], size_t size) {
+    size_t i;
     printf("%s [", name);
     for(i=0;i<size;i++)
         printf("%2.5f ", mat[i]);
