@@ -1,8 +1,7 @@
-
-damping
+damping tool
 =======
 
-damping is a simple (and didactic) feedback systems simulator.
+damping is a simple feedback systems simulator.
 
 It allows you to watch what happens to a feedback system when you play with its input (_u_ parameter).
 
@@ -15,7 +14,7 @@ where
 ![](http://i.imgur.com/Rhdu74C.png)
 
 
-Screenshot
+Screenshots
 -------
 
 ![Screenshot](http://i.imgur.com/BqvLK5I.png)
